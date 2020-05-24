@@ -102,4 +102,29 @@ document.addEventListener("DOMContentLoaded", () => {
       draw();
     }
   }
+
+  function moveLeft() {
+    undraw();
+    const isAtLeftEdge = current.some(
+      (i) => (currentPosition + i) % width === 0
+    );
+
+    if (!isAtLeftEdge) currentPosition -= 1;
+
+    if (
+      current.some((i) =>
+        Squares[currentPosition + index].classList.contains("taken")
+      )
+    ) {
+      currentPosition += 1;
+    }
+    draw();
+  }
+
+  function control(e) {
+    if (e.keyCode === 37) {
+      moveLeft();
+    }
+  }
+  document.addEventListener("keyup", control);
 });
