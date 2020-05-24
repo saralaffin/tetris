@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let box = document.createElement("div");
     Grid.appendChild(box);
   }
+  for (let j = 0; j < 10; j++) {
+    let box = document.createElement("div");
+    box.classList.add("taken");
+    Grid.appendChild(box);
+  }
   const Squares = Grid.querySelectorAll("div");
   const Score = document.querySelector("#score");
   const StartBtn = document.querySelector("#start-button");
@@ -71,6 +76,30 @@ document.addEventListener("DOMContentLoaded", () => {
       Squares[currentPosition + index].classList.remove("tetromino");
     });
   }
-  draw();
-  setInterval(undraw, 1000);
+
+  let timerId = setInterval(moveDown, 1000);
+
+  function moveDown() {
+    undraw();
+    currentPosition += width;
+    draw();
+    freeze();
+  }
+
+  function freeze() {
+    if (
+      current.some((i) =>
+        Squares[currentPosition + i + width].classList.contains("taken")
+      )
+    ) {
+      current.forEach((i) =>
+        Squares[currentPosition + i].classList.add("taken")
+      );
+
+      random = Math.floor(Math.random() * theTetrominoes.length);
+      current = theTetrominoes[random][currentRotation];
+      currentPosition = 4;
+      draw();
+    }
+  }
 });
