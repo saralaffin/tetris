@@ -16,11 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   let Squares = Array.from(Grid.querySelectorAll("div"));
   const ScoreDisplay = document.querySelector("#score");
-  let score = 10;
+  let score = 0;
   const StartBtn = document.querySelector("#start-button");
   const width = 10;
   let nextRandom = 0;
   let timerId;
+  const colors = ["orange", "red", "purple", "green", "blue"];
 
   //The Tetrominoes
   const lTetromino = [
@@ -76,12 +77,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function draw() {
     current.forEach((index) => {
       Squares[currentPosition + index].classList.add("tetromino");
+      Squares[currentPosition + index].style.backgroundColor = colors[random];
     });
   }
 
   function undraw() {
     current.forEach((index) => {
       Squares[currentPosition + index].classList.remove("tetromino");
+      Squares[currentPosition + index].style.backgroundColor = "";
     });
   }
 
@@ -189,9 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function upNextShape() {
     UpNextSquares.forEach((square) => {
       square.classList.remove("tetromino");
+      square.style.backgroundColor = "";
     });
     upNextTetrominoes[nextRandom].forEach((i) => {
       UpNextSquares[upNextIndex + i].classList.add("tetromino");
+      UpNextSquares[upNextIndex + i].style.backgroundColor = colors[nextRandom];
     });
   }
 
@@ -227,6 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
         row.forEach((index) => {
           Squares[index].classList.remove("taken");
           Squares[index].classList.remove("tetromino");
+          Squares[index].style.backgroundColor = "";
         });
         const squaresRemoved = Squares.splice(i, width);
         Squares = squaresRemoved.concat(Squares);
