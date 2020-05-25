@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
       (i) => (currentPosition + i) % width === 0
     );
 
-    if (!isAtLeftEdge) currentPosition -= 1;
+    if (!isAtLeftEdge) currentPosition--;
 
     if (
       current.some((i) =>
@@ -120,10 +120,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     draw();
   }
+  function moveRight() {
+    undraw();
+    const isAtRightEdge = current.some(
+      (i) => (currentPosition + i + 1) % width === 0
+    );
+
+    if (!isAtRightEdge) currentPosition++;
+
+    if (
+      current.some((i) =>
+        Squares[currentPosition + index].classList.contains("taken")
+      )
+    ) {
+      currentPosition += 1;
+    }
+    draw();
+  }
+  function rotate() {
+    undraw();
+    currentRotation++;
+    if (currentRotation === current.length) {
+      currentRotation = 0;
+    }
+    current = theTetrominoes[random][currentRotation];
+    draw();
+  }
 
   function control(e) {
-    if (e.keyCode === 37) {
-      moveLeft();
+    switch (e.keyCode) {
+      case 37:
+        moveLeft();
+        break;
+      case 38:
+        rotate();
+        break;
+      case 39:
+        moveRight();
+        break;
+      case 40:
+        moveDown();
+        break;
     }
   }
   document.addEventListener("keyup", control);
