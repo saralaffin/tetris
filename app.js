@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentRotation = 0;
 
   let random = Math.floor(Math.random() * theTetrominoes.length);
-  console.log(random);
+
   let current = theTetrominoes[random][currentRotation];
 
   function draw() {
@@ -108,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
       draw();
       upNextShape();
       addScore();
+      gameOver();
     }
   }
 
@@ -231,6 +232,17 @@ document.addEventListener("DOMContentLoaded", () => {
         Squares = squaresRemoved.concat(Squares);
         Squares.forEach((cell) => Grid.appendChild(cell));
       }
+    }
+  }
+
+  function gameOver() {
+    if (
+      current.some((i) =>
+        Squares[currentPosition + i].classList.contains("taken")
+      )
+    ) {
+      ScoreDisplay.innerHTML = "end";
+      clearInterval(timerId);
     }
   }
 });
