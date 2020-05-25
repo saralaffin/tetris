@@ -9,10 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
     box.classList.add("taken");
     Grid.appendChild(box);
   }
+  for (let j = 0; j < 16; j++) {
+    let box = document.createElement("div");
+    // box.classList.add("taken");
+    document.querySelector(".mini-grid").appendChild(box);
+  }
   const Squares = Grid.querySelectorAll("div");
   const Score = document.querySelector("#score");
   const StartBtn = document.querySelector("#start-button");
   const width = 10;
+  let nextRandom = 0;
+  let timerId;
 
   //The Tetrominoes
   const lTetromino = [
@@ -77,8 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  let timerId = setInterval(moveDown, 1000);
-
   function moveDown() {
     undraw();
     currentPosition += width;
@@ -95,11 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
       current.forEach((i) =>
         Squares[currentPosition + i].classList.add("taken")
       );
-
-      random = Math.floor(Math.random() * theTetrominoes.length);
+      random = nextRandom;
+      nextRandom = Math.floor(Math.random() * theTetrominoes.length);
       current = theTetrominoes[random][currentRotation];
       currentPosition = 4;
       draw();
+      upNextShape();
     }
   }
 
@@ -113,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       current.some((i) =>
-        Squares[currentPosition + index].classList.contains("taken")
+        Squares[currentPosition + i].classList.contains("taken")
       )
     ) {
       currentPosition += 1;
@@ -130,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       current.some((i) =>
-        Squares[currentPosition + index].classList.contains("taken")
+        Squares[currentPosition + i].classList.contains("taken")
       )
     ) {
       currentPosition += 1;
@@ -164,4 +170,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   document.addEventListener("keyup", control);
+
+  const UpNextSquares = document.querySelectorAll(".mini-grid div");
+  const upNextWidth = 4;
+  const upNextIndex = 0;
+
+  const upNextTetrominoes = [
+    [1, upNextWidth + 1, upNextWidth * 2 + 1, 2],
+    [0, upNextWidth, upNextWidth + 1, upNextWidth * 2 + 1],
+    [1, upNextWidth, upNextWidth + 1, upNextWidth + 2],
+    [0, 1, upNextWidth, upNextWidth + 1],
+    [1, upNextWidth + 1, upNextWidth * 2 + 1, upNextWidth * 3 + 1],
+  ];
+
+  function upNextShape() {
+    UpNextSquares.forEach((square) => {
+      square.classList.remove("tetromino");
+    });
+    upNextTetrominoes[nextRandom].forEach((i) => {
+      UpNextSquares[upNextIndex + i].classList.add("tetromino");
+    });
+  }
+
+  StartBtn.addEventListener("click", () => {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    } else {
+      draw();
+      timerId = setInterval(moveDown, 1000);
+      nextRandom = Math.floor(Math.random() * theTetrominoes.length);
+      upNextShape();
+    }
+  });
 });
