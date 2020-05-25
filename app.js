@@ -14,8 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // box.classList.add("taken");
     document.querySelector(".mini-grid").appendChild(box);
   }
-  const Squares = Grid.querySelectorAll("div");
-  const Score = document.querySelector("#score");
+  let Squares = Array.from(Grid.querySelectorAll("div"));
+  const ScoreDisplay = document.querySelector("#score");
+  let score = 10;
   const StartBtn = document.querySelector("#start-button");
   const width = 10;
   let nextRandom = 0;
@@ -106,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentPosition = 4;
       draw();
       upNextShape();
+      addScore();
     }
   }
 
@@ -203,4 +205,32 @@ document.addEventListener("DOMContentLoaded", () => {
       upNextShape();
     }
   });
+
+  function addScore() {
+    for (let i = 0; i < 199; i += width) {
+      const row = [
+        i,
+        i + 1,
+        i + 2,
+        i + 3,
+        i + 4,
+        i + 5,
+        i + 6,
+        i + 7,
+        i + 8,
+        i + 9,
+      ];
+      if (row.every((index) => Squares[index].classList.contains("taken"))) {
+        score += 10;
+        ScoreDisplay.innerHTML = score;
+        row.forEach((index) => {
+          Squares[index].classList.remove("taken");
+          Squares[index].classList.remove("tetromino");
+        });
+        const squaresRemoved = Squares.splice(i, width);
+        Squares = squaresRemoved.concat(Squares);
+        Squares.forEach((cell) => Grid.appendChild(cell));
+      }
+    }
+  }
 });
